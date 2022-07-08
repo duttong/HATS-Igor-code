@@ -4,6 +4,7 @@
 // v 1.2 Added loader for UCATS engineering data load_realtime_GC_userpacket()
 // v 1.3 Updated DisplayData
 // v 1.4 Changed aircraft tail number from N809NA to N806NA
+// v 1.5 bug. fixed removedata() to remove G_data string
 
 #pragma rtGlobals=3		// Use modern global access method and strict wave access.
 
@@ -680,7 +681,7 @@ function removedata()
 	endfor
 	
 	killwaves /Z userpacket_matrix
-	killstrings /Z G_userpacket
+	killstrings /Z G_userpacket, G_data
 end
 
 
