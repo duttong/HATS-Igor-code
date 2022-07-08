@@ -23,6 +23,9 @@ Menu "Macros"
 	"load HUPCRS (CH4, CO2, CO, H2O) /5", load_HUPCRS()
 	"load HWV (Water vapor) /6", load_HWV()
 	"-"
+	"load all as background task every 30s", StartLoadTask()
+	"stop background loading", StopLoadTask()
+	"-"
 	"Display Data"
 	"-"
 	"Lat vs Lon Figure", Lat_Lon()
@@ -39,6 +42,24 @@ function loadall()
 	load_ROZE()
 	load_HUPCRS()
 	load_HWV()
+end
+
+Function StartLoadTask()
+	Variable numTicks = 30 * 60		// Run every 30 seconds
+	CtrlNamedBackground loader, period=numTicks, proc=BkGload
+	CtrlNamedBackground loader, start
+End
+
+Function StopLoadTask()
+	CtrlNamedBackground loader, stop
+End
+
+Function BkGload(s)
+	STRUCT WMBackgroundStruct &s
+	
+	//Printf "Task %s called, ticks=%d\r", s.name, s.curRunTicks
+	loadall()
+	return 0
 end
 
 function load_UCATS()
