@@ -887,9 +887,12 @@ EndMacro
 
 Window GlobalN2Ogrowthrate_web() : Graph
 	PauseUpdate; Silent 1		// building window...
+	DisplayGrowthRate("N2O","Global","CATS;OTTO;CCGG","GML",12,2)
+	
 	String fldrSav0= GetDataFolder(1)
 	SetDataFolder root:global:
 	Display /W=(352,66,1047,451)/K=1  GML_Global_N2O_gr vs GML_N2O_date
+	DoWindow /K GlobalN2Ogrowthrate
 	SetDataFolder fldrSav0
 	ModifyGraph margin(left)=75,margin(bottom)=70,margin(top)=15,margin(right)=20,gFont="Helvetica"
 	ModifyGraph gfSize=14,gmSize=2,width=600,height=300
@@ -909,9 +912,9 @@ Window GlobalN2Ogrowthrate_web() : Graph
 	Label left "\\f01N\\B2\\MO Growth Rate (ppb yr\\S-1\\M)"
 	Label bottom "\\f01Time"
 	SetAxis/A/N=1 left
-	SetAxis/N=1 bottom 3029529600,3692304000
+	SetAxis/N=1 bottom 3029529600,date2secs(ReturnCurrentYear()+1, 1, 1)
 	TextBox/C/N=NOAA/F=0/B=1/A=MC/X=-38.14/Y=-63.66 "\\JL\\F'Helvetica'\\Z11NOAA Global Monitoring Laboratory"
-	TextBox/C/N=datebox/F=0/B=1/A=MC/X=-48.33/Y=-68.33 "\\JL\\F'Helvetica'\\Z10Oct 7, 2020"
+	TextBox/C/N=datebox/F=0/B=1/A=MC/X=-48.33/Y=-68.33 "\\JL\\F'Helvetica'\\Z10" + date()[5,50]
 	SetDrawLayer UserFront
 	DrawPICT -0.111295756593079,1.06142981592732,0.4,0.4,noaa_logo_png
 	
@@ -919,6 +922,7 @@ Window GlobalN2Ogrowthrate_web() : Graph
 	SavePICT/O/P=Web_HATS/E=-5/B=72 as "GlobalN2Ogrowthrate.png"
 	
 	SetDataFolder root:
+	SyncFigures()
 
 EndMacro
 
