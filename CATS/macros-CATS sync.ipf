@@ -207,7 +207,7 @@ function TimeSyncCATSdata(site)
 
 	wave t = $DF + site + "_time"
 
-	Print "Syncing " + site + " data"
+	//Print "Syncing " + site + " data"
 	for (i=0; i<ItemsInList(mols); i+=1)
 		mol = StringFromList(i, mols)
 		mol2UnifiedTime(site, mol)

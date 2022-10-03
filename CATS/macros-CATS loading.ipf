@@ -20,12 +20,14 @@ function LoadALLCATS()
 
 		for( i=0; i<ItemsInList(siteLst); i+=1)
 			s = StringFromList(i, siteLst)
+			Print("Loading and syncing " + s) 
 			Load_Data(site=s, dur=1)
 			Load_Data(site=s, dur=2)
 			Load_Data(site=s, dur=4)
 		endfor
 				
-	else 
+	else
+		Print("Loading and syncing " + site)
 		Load_Data(site=site, dur=1)
 		Load_Data(site=site, dur=2)
 		Load_Data(site=site, dur=4)
@@ -131,26 +133,26 @@ function load_DataFUNCT( site, mol, dur, plt )
 			sfile = mol + "_H_SD"
 			nfile = ""
 			port = mol + "_port"
-			print "Loading hourly... " + site + "  " + mol
+			//print "Loading hourly... " + site + "  " + mol
 		elseif (dur == 2)		// daily median
 			dfile = mol + "_best_conc_dailyY"
 			tfile = mol + "_best_conc_dailyX"
 			sfile = mol + "_best_conc_dailySD"
 			nfile = mol + "_best_conc_dailyNum"
-			print "Loading daily... " + site + "  " + mol
+			//print "Loading daily... " + site + "  " + mol
 		elseif (dur == 3)		// Weekly median
 			dfile = mol + "_best_conc_weeklyY"
 			tfile = mol + "_best_conc_weeklyX"
 			sfile = mol + "_best_conc_weeklySD"
 			nfile = mol + "_best_conc_weeklyNum"
-			print "Loading weekly... " + site + "  " + mol
+			//print "Loading weekly... " + site + "  " + mol
 		elseif (dur == 4)		// Monthly median
 			dfile = mol + "_best_conc_MonthlyY"
 			tfile = mol + "_best_conc_MonthlyX"
 			sfile = mol + "_best_conc_MonthlySD"
 			vfile = mol + "_best_conc_MonthlyVar"
 			nfile = mol + "_best_conc_MonthlyNum"
-			print "Loading monthly... " + site + "  " + mol
+			// print "Loading monthly... " + site + "  " + mol
 			// delete fitmat data so it is regenerated with the newly loaded data
 			bat("Killwaves /Z @", "root:simulation:fx_*_Ca_"+site+"_*")
 		endif
@@ -272,8 +274,10 @@ function /s DetermineExperiment( mol, site )
 	elseif ( (cmpstr(mol, "MC") == 0) + (cmpstr(mol, "CCl4") == 0) )
 		if ((cmpstr(site, "BRW") == 0) + (cmpstr(site, "NWR") == 0) + (cmpstr(site, "SUM") == 0))
 			pstr = site + " MC & CCl4"
-		else
+		elseif (cmpstr(site, "SMO") == 0)
 			pstr = site + " CHCl3, MC, CCl4"
+		else
+			pstr = site + " CF, MC, CT"
 		endif
 	
 	// Channel 4
