@@ -955,6 +955,7 @@ Function Filter_ifCATSonlyProgram(mol)
 	
 	Wave prjs = $"root:global:" + "HATS_Programs_" + mol
 	Wave sites = $"root:global:" + "HATS_Sites_" + mol
+	Wave sitesSD = $"root:global:" + "HATS_Sites_" + mol + "_sd"
 	Wave DD = $"root:global:" + "HATS_" + mol + "_date"
 	variable i, j, pt, pt_msd, col
 	variable /D month
@@ -975,6 +976,7 @@ Function Filter_ifCATSonlyProgram(mol)
 			pt_msd = BinarySearchInterp(msd_date, month)
 			if (numtype(pt_msd) == 2)
 				sites[pt][col] = nan
+				sitesSD[pt][col] = nan
 				//print pt, secs2date(month, -2), pt_msd, station, msd[pt_msd]
 			endif
 		endfor
