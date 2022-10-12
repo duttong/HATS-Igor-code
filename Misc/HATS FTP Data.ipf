@@ -490,6 +490,10 @@ end
 function ClipLoader_MSDsub_clipped(urlStr, file, mol, freq)
 	string urlStr, file, mol, freq
 
+	// this function is for M3 and not Perseus
+	NVAR PR1 = root:G_perseus
+	PR1 = 0
+	
 	//string response = FetchURL(urlStr+file)
 	string response = GetScrapText()  // use this for manually loading a data file from clipboard
 	response = ReplaceString("\r\n", response, "\r")
