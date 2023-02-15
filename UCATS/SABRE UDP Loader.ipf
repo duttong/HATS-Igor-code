@@ -4,6 +4,8 @@
 
 Menu "Macros"
 	"Load UCATS Telemetry Data /1", /Q, Load_UCATS_CSV()
+	"Start automatic loading every 30 seconds", StartLoadTask()
+	"Stop automatic loading", StopLoadTask()
 	"-"
 	"ECDs"
 	"Omegas"
@@ -19,7 +21,23 @@ Menu "Macros"
 	"Close all graphs", rmDisplayedGraphs()
 End
 
+Function StartLoadTask()
+	Variable numTicks = 30 * 60		// Run every 30 seconds
+	CtrlNamedBackground loader, period=numTicks, proc=BkGload
+	CtrlNamedBackground loader, start
+End
 
+Function StopLoadTask()
+	CtrlNamedBackground loader, stop
+End
+
+Function BkGload(s)
+	STRUCT WMBackgroundStruct &s
+	
+	//Printf "Task %s called, ticks=%d\r", s.name, s.curRunTicks
+	Load_UCATS_CSV()
+	return 0
+end
 
 Function Load_UCATS_CSV()
 
