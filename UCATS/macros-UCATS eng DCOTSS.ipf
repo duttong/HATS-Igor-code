@@ -103,8 +103,8 @@ menu "UCATS_Macros"
 	Submenu "Thermistors"
 		"Plot All Thermistors<B", ThermPlots()
 		" Sample loops", EngPlot2(temp_SL1, temp_SL2, temp_SL3, "Sample Loops (C)",0)
-		" Pump" , EngPlot1(temp_pump, "Pump temp (C)",-20)
-		" Ambient", EngPlot1(temp_amb, "Internal temp (C)",0)
+		" Pump" , EngPlot1(temp_pump, "Pump temp (C)",-40)
+		" Ambient", EngPlot1(temp_amb, "Internal temp (C)",-40)
 		" Gas Bottles", EngPlot2(temp_gasB_N, temp_gasB_C, "External gas bottles (C)",-20)
 	end
 	"External Pressure", EngPlot1( pres_extern, "External Pressure (mbar)",0)
@@ -1195,7 +1195,7 @@ function ThermPlots()
 
 	EngPlot3(temp_SL1, temp_SL2, temp_SL3, "Sample Loops (C)",0)
 	EngPlot1(temp_pump, "Pump temp (C)", -40)
-	EngPlot1(temp_amb, "Internal temp (C)",0)
+	EngPlot1(temp_amb, "Internal temp (C)",-40)
 	EngPlot2(temp_gasB_N, temp_gasB_C, "External gas bottles (C)", -40)
 
 end
