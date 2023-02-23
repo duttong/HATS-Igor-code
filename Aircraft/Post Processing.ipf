@@ -1,3 +1,4 @@
+#pragma TextEncoding = "UTF-8"
 #pragma rtGlobals=1		// Use modern global access method.
 #pragma IgorVersion=6.0
 #pragma version=1.2
