@@ -480,7 +480,10 @@ function ClipLoader_MSDsub(urlStr, file, mol, freq)
 
 	string response = FetchURL(urlStr+file)
 	response = ReplaceString("\r\n", response, "\r")
+	response = ReplaceString("mlo_pfp", response, "mlo")	// treat the pfp data like steel flask data
+	
 	PutScrapText response
+	
 	if (cmpstr(freq, "pairs") == 0)
 		MSDsplit_sites(mol, file)
 	else
@@ -498,7 +501,10 @@ function ClipLoader_MSDsub_clipped(urlStr, file, mol, freq)
 	//string response = FetchURL(urlStr+file)
 	string response = GetScrapText()  // use this for manually loading a data file from clipboard
 	response = ReplaceString("\r\n", response, "\r")
+	response = ReplaceString("mlo_pfp", response, "mlo")	// treat the pfp data like steel flask data
+	
 	PutScrapText response
+	
 	if (cmpstr(freq, "pairs") == 0)
 		MSDsplit_sites(mol, file)
 	else

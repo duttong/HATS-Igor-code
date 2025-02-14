@@ -45,9 +45,9 @@ Proc SaveAllDataFromSiteType(site, type)
 		SaveDataFile("brw","CCl4",type)
 		SaveDataFile("brw","SF6",type)
 		SaveDataFile("brw","H1211",type)
-		SaveDataFile("brw","HCFC22",type)
-		SaveDataFile("brw","HCFC142b",type)
-		SaveDataFile("brw","OCS",type)
+		//SaveDataFile("brw","HCFC22",type)
+		//SaveDataFile("brw","HCFC142b",type)
+		//SaveDataFile("brw","OCS",type)
 	endif
 
 	if (cmpstr(site,"sum")==0)
@@ -72,9 +72,9 @@ Proc SaveAllDataFromSiteType(site, type)
 		SaveDataFile("nwr","CCl4",type)
 		SaveDataFile("nwr","SF6",type)
 		SaveDataFile("nwr","H1211",type)
-		SaveDataFile("nwr","HCFC22",type)
-		SaveDataFile("nwr","HCFC142b",type)
-		SaveDataFile("nwr","OCS",type)
+		//SaveDataFile("nwr","HCFC22",type)
+		//SaveDataFile("nwr","HCFC142b",type)
+		//SaveDataFile("nwr","OCS",type)
 	endif
 	
 	if (cmpstr(site,"mlo")==0)
@@ -86,9 +86,9 @@ Proc SaveAllDataFromSiteType(site, type)
 		SaveDataFile("mlo","CCl4",type)
 		SaveDataFile("mlo","SF6",type)
 		SaveDataFile("mlo","H1211",type)
-		SaveDataFile("mlo","HCFC22",type)
-		SaveDataFile("mlo","HCFC142b",type)
-		SaveDataFile("mlo","OCS",type)
+		//SaveDataFile("mlo","HCFC22",type)
+		//SaveDataFile("mlo","HCFC142b",type)
+		//SaveDataFile("mlo","OCS",type)
 	endif
 	
 	if (cmpstr(site,"smo")==0)
@@ -100,9 +100,9 @@ Proc SaveAllDataFromSiteType(site, type)
 		SaveDataFile("smo","CCl4",type)
 		SaveDataFile("smo","SF6",type)
 		SaveDataFile("smo","H1211",type)
-		SaveDataFile("smo","HCFC22",type)
-		SaveDataFile("smo","HCFC142b",type)
-		SaveDataFile("smo","OCS",type)
+		//SaveDataFile("smo","HCFC22",type)
+		//SaveDataFile("smo","HCFC142b",type)
+		//SaveDataFile("smo","OCS",type)
 	endif
 	
 	if (cmpstr(site,"spo")==0)
@@ -114,9 +114,9 @@ Proc SaveAllDataFromSiteType(site, type)
 		SaveDataFile("spo","CCl4",type)
 		SaveDataFile("spo","SF6",type)
 		SaveDataFile("spo","H1211",type)
-		SaveDataFile("spo","HCFC22",type)
-		SaveDataFile("spo","HCFC142b",type)
-		SaveDataFile("spo","OCS",type)
+		//SaveDataFile("spo","HCFC22",type)
+		//SaveDataFile("spo","HCFC142b",type)
+		//SaveDataFile("spo","OCS",type)
 	endif
 			
 end
@@ -165,8 +165,8 @@ function SaveDataFileFUNCT(site, mol, type)
 	// Strings used for header info
 	string submol = mol
 	
-	string longMolLst = "CCl4:Carbon tetrachloride;MC:Methyl chlorform;F11:Chloroflurocarbon-11;F12:Chloroflurocarbon-12;F113:Chloroflurocarbon-113;"
-	longMolLst += "H1211:Halon-1211;N2O:Nitrous Oxide;HCFC22:Hydrochloroflurocarbon-22;OCS:Carbonyl sulfide;SF6:Sulfur hexaflouride;"
+	string longMolLst = "CCl4:Carbon tetrachloride;MC:Methyl chlorform;F11:Chlorofluorocarbon-11;F12:Chlorofluorocarbon-12;F113:Chlorofluorocarbon-113;"
+	longMolLst += "H1211:Halon-1211;N2O:Nitrous Oxide;HCFC22:hydrochlorofluorocarbon-22;OCS:Carbonyl sulfide;SF6:Sulfur hexafluoride;"
 	longMolLst += "HCFC142b:Hydrochloroflurocarbon-142b;"
 	string longMol = StringByKey(submol, longMolLst)
 		

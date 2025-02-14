@@ -553,7 +553,6 @@ end
 function LoadCCGGfile(mol)
 	string mol
 
-	string s, sMR, sSD, sDate
 	string file = "Macintosh HD:Users:gdutton:Data:CATS:Data Processing:ccgg_" + lowerStr(mol) + ".csv"
 	variable i
 	
@@ -590,6 +589,9 @@ function LoadCCGGfile(mol)
 	
 	LoadWave/O/A/Q/J/W/K=0/B=columnInfoStr/R={English,2,2,2,2,"Year-Month-DayOfMonth",40} file
 	print "loaded from: " + file
+	
+	wave dd = $"CCGG_" + mol + "_date"
+	dd += 14*24*60*60   // shift to center of month
 	
 	cd root:
 	
@@ -945,6 +947,129 @@ function LoadCCGGinSituData( )
 	
 	SetDataFolder root:
 	
+end
+
+// routine to handle new OTTO + FE3, ECD data file.
+// 240215
+Function LoadECD_file()
+	String mol = "CCl4"
+	
+	Variable i
+	string s, site, mf, mfsd, tt, nn
+	NewDataFolder /O/S root:flask_ECD
+	
+	//LoadWave/J/D/W/K=0/V={"\t "," $",0,0}/L={31,32,0,0,0}/R={English,2,2,2,2,"YearMonthDayOfMonth",40} "Macintosh HD:Users:gdutton:Downloads:CCl4_ECD_flask.txt"
+	// this skips the yyyymmdd, hhmm, wind_speed, and wind_dir columns
+	LoadWave/O/A/J/B="C=1,F=-2,N=sitewv;C=1,T=4,N=dec_date;C=4,N='_skip_';C=1,T=2,N=CCl4;C=1,T=2,N=CCl4sd;"/V={"\t "," $",0,0}/L={31,32,0,0,0} "Macintosh HD:Users:gdutton:Downloads:CCl4_ECD_flask.txt"
+	Wave /T sitewv
+	
+	// remove space characters
+	for(i=0; i<numpnts(sitewv); i+=1)
+		sitewv[i] = ReplaceString(" ", sitewv[i], "")
+	endfor
+	
+	// make a text wave of unique site codes in the sitewv
+	FindDuplicates /FREE /RT=sites sitewv
+	
+	Wave dec_date
+	Make /d/o/n=(numpnts(dec_date)) date_wv = decimalday2secs(dec_date)
+	SetScale d 0,0,"dat", date_wv
+	
+	for(i=0; i<numpnts(sites); i+=1)
+		site = sites[i]
+		mf = "ECD_" + site + "_CCl4"
+		Extract /O CCl4, $mf, cmpstr(sitewv, site) == 0
+		mfsd = "ECD_" + site + "_CCl4_sd"
+		Extract /O CCl4sd, $mfsd, cmpstr(sitewv, site) == 0
+		tt = "ECD_" + site + "_CCl4_date"
+		Extract /O date_wv, $tt, cmpstr(sitewv, site) == 0
+		nn = "ECD_" + site + "_CCl4_num"
+		
+		MonthlyMean($tt, $mf, $mfsd, 1996, ReturnCurrentYear())
+		duplicate /o results, $mf
+		duplicate /o resultsSD, $mfsd
+		duplicate /o resultsTT, $tt
+		duplicate /o resultsNum, $nn
+	endfor
+	
+	// trim off extra cells
+	//variable pt = FirstGoodPt(MR)
+	//DeletePoints 0, pt, MR, SD, TT
+	//pt = LastGoodPt(MR)
+	//DeletePoints pt+1, Inf, MR, SD, TT
+	
+	//cleanup
+	Killwaves /Z CCl4, CCl4sd, date_wv, dec_date, results, resultsSD, resultsTT, resultsNum, site, sites, sitewv
+
+	SetDataFolder root:
+	
+end
+
+function copy_ECD_to_OTTO()
+
+	cd root:flask_ECD
+	
+	string wv, wvs = Wavelist("ECD_*", ";", ""), wvstr, otto
+	variable i
+	
+	for(i=0; i<ItemsInList(wvs); i+=1)
+		wvstr = StringFromList(i, wvs)
+		otto = "root:otto:" + ReplaceString("ECD_", wvstr, "OTTO_")
+		duplicate /o $wvstr, $otto
+	endfor
+
+	cd root:
+
+end
+
+function MonthlyMean(timewv, data, dataSD, year0, year1)
+	wave timewv, data, dataSD
+	variable year0, year1
+
+	variable inc, minc, yinc, day, hour
+	variable num = (year1 - year0)*12
+	
+	// create result waves
+	Make /o/n=(num) results = Nan, resultsSD = Nan, resultsNum = Nan
+	Make /o/d/n=(num) resultsTT = NaN
+	
+	for(inc=0; inc<num; inc += 1)
+		minc += 1
+		if (minc == 13)
+			minc = 1
+			yinc += 1
+		endif
+		day = ReturnMidDayOfMonth(year0 + yinc, minc)
+		if (mod(day, 1) != 0)
+			hour = 12
+			day -= 0.5
+		else
+			hour = 0
+		endif			
+		resultsTT[inc] = date2secs(year0 + yinc, minc, day) + 60*60*hour
+		if (minc == 12)
+			Extract /FREE data, month, timewv > date2secs(year0 + yinc, 12, 1)  && timewv <= date2secs(year0 + yinc + 1, 1, 1)
+			Extract /FREE dataSD, monthSD, timewv > date2secs(year0 + yinc, 12, 1)  && timewv <= date2secs(year0 + yinc + 1, 1, 1)
+		else
+			Extract /FREE data, month, timewv > date2secs(year0 + yinc, minc, 1)  && timewv <= date2secs(year0 + yinc, minc+1, 1)
+			Extract /FREE dataSD, monthSD, timewv > date2secs(year0 + yinc, minc, 1)  && timewv <= date2secs(year0 + yinc, minc+1, 1)
+		endif
+		results[inc] = mean(month)
+		resultsNum[inc] = numpnts(month)
+		//SD[inc] = mean(sdtmp)			// this is the mean of precisions. 
+		// sdev of measurement (not weighted by pair precisions)  180921
+		if (numpnts(month) > 0)
+			Wavestats /Z/Q month
+			resultsSD[inc] = V_sdev/sqrt(V_npnts)
+		else
+			resultsSD[inc] = nan
+		endif
+		// Use the larger value: sdev of measurement or mean precision. 180921
+		resultsSD[inc] = SelectNumber(resultsSD[inc] > mean(monthSD)/sqrt(numpnts(month)), mean(monthSD)/sqrt(numpnts(month)), resultsSD[inc])
+		resultsSD[inc] = SelectNumber(resultsSD[inc] > 0.0001, resultsSD[inc-1], resultsSD[inc])			/// can't have a zero for SD (130314)
+		
+	endfor
+
 end
 
 Function LoadOtto_All()
